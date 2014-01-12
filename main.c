@@ -44,6 +44,7 @@ void parse_cli(int argc, char *argv[]) {
   int i;
   for (i = 1; i < argc; i++) {
     arg = argv[i];
+  handle_arg:
     if (ctx == OPT_DTBUFSIZE) {
       if (args_handled & ARG_DTBUFSIZE) {
         // dtbufsize parameter present twice
@@ -70,8 +71,13 @@ void parse_cli(int argc, char *argv[]) {
       }
       args_handled |= ARG_DTBUFSIZE;
       ctx = OPT_NONE;
-    } else if (strcmp("-b", arg) == 0) {
+    } else if (strncmp("-b", arg, 2) == 0) {
       ctx = OPT_DTBUFSIZE;
+      if (strlen(&arg[2]) > 0) {
+        // handle "-b12" like "-b 12"
+        arg = &arg[2];
+        goto handle_arg;        // yeah, this is ugly, but straightforward!
+      }
     } else {
       if (args_handled & ARG_VALUE) {
         // delay value present twice
