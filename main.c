@@ -196,13 +196,13 @@ int main(int argc, char *argv[]) {
         out_closed = 1;
       }
     } else {
-      if (poll_stdout && (fds_all[1].revents & (POLLOUT | POLLHUP))) {
+      if (poll_stdout && fds_all[1].revents) {
         // read from dtbuf and write to stdout
         if (dtbuf_read_chunk(&dtbuf, 1 /* stdout */ ) <= 0) {
           out_closed = 1;
         }
       }
-      if (poll_stdin && (fds_all[0].revents & (POLLIN | POLLHUP))) {
+      if (poll_stdin && fds_all[0].revents) {
         // we may have waited, get the new current time
         now = get_time_ms();
         // read from stdin and write to dtbuf
