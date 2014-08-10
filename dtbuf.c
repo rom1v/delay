@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include "dtbuf.h"
 
-#define DTBUF_CHUNK_HEADERS_SIZE (sizeof(time_ms) + sizeof(short))
+#define DTBUF_CHUNK_HEADERS_SIZE (sizeof(time_ms) + sizeof(chunk_length))
 #define DTBUF_CHUNK_PAYLOAD_SIZE 4000
 #define DTBUF_CHUNK_SIZE (DTBUF_CHUNK_HEADERS_SIZE + DTBUF_CHUNK_PAYLOAD_SIZE)
 
