@@ -205,7 +205,7 @@ int main(int argc, char *argv[]) {
     // update next_chunk state
     has_next_chunk = !dtbuf_is_empty(&dtbuf);
     if (has_next_chunk) {
-      dtbuf_peek_headers(&dtbuf, &next_chunk_timestamp, NULL);
+      next_chunk_timestamp = dtbuf_next_timestamp(&dtbuf);
     }
     // always stop on out_closed
     // also stop when there will be no more chunks anymore

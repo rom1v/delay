@@ -4,9 +4,14 @@
 #include <unistd.h>
 #include "dtbuf.h"
 
-#define DTBUF_CHUNK_HEADERS_SIZE (sizeof(time_ms) + sizeof(chunk_length))
 #define DTBUF_CHUNK_PAYLOAD_SIZE 4000
-#define DTBUF_CHUNK_SIZE (DTBUF_CHUNK_HEADERS_SIZE + DTBUF_CHUNK_PAYLOAD_SIZE)
+
+struct header {
+  time_ms timestamp;
+  chunk_length data_length;
+};
+
+#define DTBUF_CHUNK_SIZE (sizeof (struct header) + DTBUF_CHUNK_PAYLOAD_SIZE)
 
 int dtbuf_init(struct dtbuf *dtbuf, size_t capacity) {
   // to avoid splitting a chunk on the circular buffer boundaries, add
@@ -43,30 +48,23 @@ int dtbuf_is_full(struct dtbuf *dtbuf) {
                                             DTBUF_CHUNK_SIZE);
 }
 
-void dtbuf_peek_headers(struct dtbuf *dtbuf, time_ms * timestamp,
-                        chunk_length * length) {
-  if (timestamp) {
-    memcpy(timestamp, &dtbuf->data[dtbuf->tail], sizeof(time_ms));
-  }
-  if (length) {
-    memcpy(length, &dtbuf->data[dtbuf->tail + sizeof(time_ms)],
-           sizeof(chunk_length));
-  }
+time_ms dtbuf_next_timestamp(struct dtbuf *dtbuf) {
+  struct header *header = (struct header *) &dtbuf->data[dtbuf->tail];
+  return header->timestamp;
 }
 
 ssize_t dtbuf_write_chunk(struct dtbuf *dtbuf, int fd_in, time_ms timestamp) {
   ssize_t r;
-  chunk_length length;
+  struct header header;
   // directly write to dtbuf, at the right index
-  int payload_index = dtbuf->head + DTBUF_CHUNK_HEADERS_SIZE;
+  int payload_index = dtbuf->head + sizeof(struct header);
   if ((r =
        read(fd_in, &dtbuf->data[payload_index],
             DTBUF_CHUNK_PAYLOAD_SIZE)) > 0) {
     // write headers
-    memcpy(&dtbuf->data[dtbuf->head], &timestamp, sizeof(time_ms));
-    length = (chunk_length) r;
-    memcpy(&dtbuf->data[dtbuf->head + sizeof(time_ms)], &length,
-           sizeof(chunk_length));
+    header.timestamp = timestamp;
+    header.data_length = (chunk_length) r;
+    memcpy(&dtbuf->data[dtbuf->head], &header, sizeof(header));
     dtbuf->head = payload_index + r;
     if (dtbuf->head >= dtbuf->capacity && dtbuf->tail >= DTBUF_CHUNK_SIZE) {
       // not enough space at the end of the buffer, cycle if there is enough
@@ -81,12 +79,11 @@ ssize_t dtbuf_write_chunk(struct dtbuf *dtbuf, int fd_in, time_ms timestamp) {
 
 ssize_t dtbuf_read_chunk(struct dtbuf * dtbuf, int fd_out) {
   ssize_t w;
-  chunk_length length;
-  // read length from headers
-  memcpy(&length, &dtbuf->data[dtbuf->tail + sizeof(time_ms)],
-         sizeof(chunk_length));
+  struct header *pheader = (struct header *) &dtbuf->data[dtbuf->tail];
+  struct header header;
+  chunk_length length = pheader->data_length;
   // directly read from dtbuf, at the right index
-  int payload_index = dtbuf->tail + DTBUF_CHUNK_HEADERS_SIZE;
+  int payload_index = dtbuf->tail + sizeof(struct header);
   if ((w = write(fd_out, &dtbuf->data[payload_index], length)) > 0) {
     if (w == length) {
       // we succeed to write all the data
@@ -100,14 +97,12 @@ ssize_t dtbuf_read_chunk(struct dtbuf * dtbuf, int fd_out) {
         }
       }
     } else {
-      // copy the timestamp header to the new tail position
-      memcpy(&dtbuf->data[dtbuf->tail + w], &dtbuf->data[dtbuf->tail],
-             sizeof(time_ms));
-      // write the remaining length to headers
       dtbuf->tail += w;
-      length -= w;
-      memcpy(&dtbuf->data[dtbuf->tail + sizeof(time_ms)], &length,
-             sizeof(chunk_length));
+      // set the timestamp for writing at the new tail position
+      header.timestamp = pheader->timestamp;
+      // set the remaining length
+      header.data_length = length - w;
+      memcpy(&dtbuf->data[dtbuf->tail], &header, sizeof(header));
     }
     if (dtbuf->head >= dtbuf->capacity && dtbuf->tail >= DTBUF_CHUNK_SIZE) {
       // there is enough space at the start now, head can cycle

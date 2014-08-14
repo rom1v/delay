@@ -34,11 +34,9 @@ int dtbuf_init(struct dtbuf *dtbuf, size_t capacity);
 // free dtbuf content (not dtbuf itself)
 void dtbuf_free(struct dtbuf *dtbuf);
 
-// read the headers of the next chunk to be read into timestamp (if not NULL)
-// and length (if not NULL)
+// read the timestamp from the headers of the next chunk to be read
 // assumes !is_empty(dtbuf)
-void dtbuf_peek_headers(struct dtbuf *dtbuf, time_ms * timestamp,
-                        chunk_length * length);
+time_ms dtbuf_next_timestamp(struct dtbuf *dtbuf);
 
 // indicates whether the buffer is empty
 int dtbuf_is_empty(struct dtbuf *dtbuf);
