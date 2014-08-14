@@ -111,7 +111,7 @@ int main(int argc, char *argv[]) {
   int r;                        // returned by poll()
   int fds_count;
   int has_next_chunk = 0;
-  time_ms next_chunk_timestamp;
+  time_ms next_chunk_timestamp = 0;
   time_ms now;
   time_ms wait_delay;
   // Note that stdin and stdout polling is not symetrical: we always poll
