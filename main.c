@@ -14,8 +14,8 @@ struct dtbuf dtbuf;
 
 // stdout is at index 0 because we will always poll it
 struct pollfd fds_all[] = {
-  {1 /* stdout */ , POLLOUT },
-  {0 /* stdin */ , POLLIN }
+  { 1 /* stdout */ , POLLOUT },
+  { 0 /* stdin */ , POLLIN }
 };
 
 // default values, changed by parse_cli()
