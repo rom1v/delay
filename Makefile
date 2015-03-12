@@ -7,7 +7,7 @@ CFLAGS = -Wall -O3
 release: delay
 
 delay: $(OBJ)
-	cc $(CFLAGS) -o $(OUT) $(OBJ)
+	$(CC) $(CFLAGS) -o $(OUT) $(OBJ)
 
 $(OBJ): dtbuf.h time_ms.h
 
