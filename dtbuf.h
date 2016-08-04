@@ -1,6 +1,7 @@
 #ifndef __H_DTBUF
 #define __H_DTBUF
 
+#include <sys/types.h>
 #include <stddef.h>
 #include <stdint.h>
 #include "time_ms.h"
