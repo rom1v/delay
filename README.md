@@ -1,7 +1,7 @@
 `delay` is a shell command introducing a constant delay between its standard
 input and its standard output.
 
-### Usage
+## Usage
 
     delay [-b <dtbufsize>] <delay>
 
@@ -21,7 +21,7 @@ to `-b 12m`).
  * `12m` means 12 minutes (12×60×1000)
  * `12h` means 12 hours (12×60×60×1000)
 
-#### Example
+### Example
 
 To delay the output of `command_A` to `command_B` by 5 seconds:
 
@@ -43,3 +43,8 @@ seconds:
 
     ffmpeg -an -s 320x240 -f video4linux2 -i /dev/video0 -f mpeg2video -b 1M - |
         delay 2s | vlc -
+
+## Blog post
+
+<http://blog.rom1v.com/2014/01/lecture-differee-de-la-webcam-dun-raspberry-pi/>
+(in French)
