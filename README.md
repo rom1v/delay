@@ -21,6 +21,10 @@ to `-b 12m`).
  * `12m` means 12 minutes (12×60×1000)
  * `12h` means 12 hours (12×60×60×1000)
 
+The maximum expected bitrate provided by `delay` is the buffersize divided by
+the delay.  For instance, `delay -b 10m 5s` will provide a maximum bitrate of
+2Mb/s.
+
 ### Example
 
 To delay the output of `command_A` to `command_B` by 5 seconds:
