@@ -22,11 +22,11 @@
 typedef uint16_t chunk_length;
 
 struct dtbuf {
-  char *data;
-  size_t capacity;              // expected capacity
-  size_t real_capacity;         // capacity + DTBUF_CHUNK_SIZE - 1
-  int head;                     // index of the next chunk
-  int tail;                     // index of the oldest chunk in memory
+    char *data;
+    size_t capacity;            // expected capacity
+    size_t real_capacity;       // capacity + DTBUF_CHUNK_SIZE - 1
+    int head;                   // index of the next chunk
+    int tail;                   // index of the oldest chunk in memory
 };
 
 // init a dtbuf structure with an expected capacity
