@@ -26,4 +26,5 @@ clean:
 	rm -f $(OBJ) $(OUT)
 
 install: release
-	install $(OUT) $(DESTDIR)/usr/local/bin
+	mkdir -p $(DESTDIR)/usr/bin
+	install $(OUT) $(DESTDIR)/usr/bin
