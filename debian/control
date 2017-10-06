@@ -1,0 +1,15 @@
+Source: delay
+Section: utils
+Priority: optional
+Maintainer: Romain Vimont <rom@rom1v.com>
+Build-Depends: debhelper (>= 9)
+Standards-Version: 3.9.8
+Homepage: https://github.com/rom1v/delay
+Vcs-Git: https://github.com/rom1v/delay.git
+
+Package: delay
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Delayed pipe
+ The 'delay' command introduces a constant delay between its standard input
+ and its standard output.
