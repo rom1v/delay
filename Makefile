@@ -2,7 +2,7 @@
 
 OUT = delay
 OBJ = main.o dtbuf.o time_ms.o
-CFLAGS = -Wall -O3
+CFLAGS = -Wall -g -O3
 
 release: delay
 
