@@ -2,12 +2,12 @@
 
 OUT = delay
 OBJ = main.o dtbuf.o time_ms.o
-CFLAGS = -Wall -g -O3
+CFLAGS += -Wall -g -O3
 
 release: delay
 
 delay: $(OBJ)
-	$(CC) $(CFLAGS) -o $(OUT) $(OBJ)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $(OUT) $(OBJ)
 
 $(OBJ): dtbuf.h time_ms.h
 
