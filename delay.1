@@ -1,0 +1,42 @@
+.Dd Nov 21, 2018
+.Dt DELAY 1
+.Os
+.Sh NAME
+.Nm delay
+.Nd a constant delay generator
+.Sh SYNOPSIS
+.Nm
+.Op Ar -b bufsize
+.Op Ar delay
+.Sh DESCRIPTION
+.Nm
+introduces a constant delay between its standard input and its standard output. The data from its stdin will be stored until it has been written to stdout. The required \fBdelay\fP argument specifies the delay time in millisecond.
+.Pp
+.Nm
+supports the following options:
+.Pp
+delay
+        delay is the desired delay time, in milliseconds. The following modifiers are accepted:
+        12s means 12 seconds
+        12m means 12 minutes
+        12h means 12 hours
+.Pp
+.Fl "b bufsize"
+        buffer size stores the data until it has been written to stdout, in bytes. The following modifiers are accepted:
+        12k means 12Kb
+        12m means 12Mb
+        12g means 12Gb 
+.Pp
+.Sh EXAMPLES
+.Pp
+.Bd -literal
+delay the output of command_A to command_B by 5 seconds:
+        $ command_A | delay 5s | command_B
+.Pp
+delay the output of command_A to command_B by 5 seconds with 10MB buffer:
+        $ command_A | delay -b 10m 5s | command_B
+.Ed
+.Sh AUTHORS
+.An Romain Vimont Aq Mt rom@rom1v.com
+.Sh HOME
+.Em https://github.com/rom1v/delay
