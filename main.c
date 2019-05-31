@@ -101,7 +101,7 @@ void parse_cli(int argc, char *argv[])
             } else if (strcmp("m", garbage) == 0) {
                 delay *= 60 * 1000;
             } else if (strcmp("h", garbage) == 0) {
-                delay *= 60 * 1000 * 1000;      // likely to be useless
+                delay *= 60 * 60 * 1000;      // likely to be useless
             } else if (garbage[0] != '\0') {
                 fprintf(stderr, "delay value contains garbage: %s\n", garbage);
                 exit(SYNTAX_ERROR);
